@@ -60,5 +60,5 @@ app.post("/api/gemini", async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`🚀 Server chạy tại http://localhost:${PORT}`));
