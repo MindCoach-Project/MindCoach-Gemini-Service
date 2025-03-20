@@ -42,8 +42,6 @@ app.post("/api/gemini", async (req, res) => {
       }
     );
 
-    console.log(response.content);
-
     try {
       let rawText = response.data.candidates[0]?.content.parts[0]?.text || "{}";
 
@@ -61,8 +59,12 @@ app.post("/api/gemini", async (req, res) => {
       ) {
         throw new Error("Missing required fields.");
       }
+      
+    // ✅ Console.log trước khi gửi phản hồi
+    console.log("✅ Extracted Data:", extractedData);
 
-      res.status(200).json(extractedData);
+    res.status(200).json(extractedData);
+    
     } catch (parseError) {
       res.status(500).json({ error: "Invalid response data from Gemini" });
     }
