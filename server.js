@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import axios from "axios";
 import cors from "cors";
-import moment from "moment-timezone"; // 🕒 Hỗ trợ chuyển đổi chính xác
+import moment from "moment-timezone"; 
 
 dotenv.config();
 
@@ -12,13 +12,11 @@ app.use(cors());
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const PORT = process.env.PORT || 5000;
-const MODEL_ID = "tunedModels/mindcoachapi-76a6w7vlj5ae";
+const MODEL_ID = process.env.MODEL_ID;
 
-// 🕒 Chuyển đổi cụm từ thời gian sang ngày thực tế
 const replaceRelativeDates = (text) => {
   const now = moment().tz("Asia/Ho_Chi_Minh");
 
-  // Chuyển đổi các cụm từ thời gian thông dụng
   let dates = {
     today: now.format("YYYY-MM-DD"),
     tomorrow: now.add(1, "days").format("YYYY-MM-DD"),
@@ -26,14 +24,13 @@ const replaceRelativeDates = (text) => {
     "next week": now.add(1, "weeks").startOf("isoWeek").format("YYYY-MM-DD"),
   };
 
-  // Xử lý cụm từ có chứa thứ trong tuần (Monday, Tuesday...)
   text = text.replace(
     /\b(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s*(tomorrow|next week)?\b/gi,
     (match, day, modifier) => {
-      let targetDay = moment().day(day); // Lấy ngày của thứ đó trong tuần
+      let targetDay = moment().day(day); 
 
       if (modifier === "tomorrow" || now.isAfter(targetDay, "day")) {
-        targetDay.add(7, "days"); // Nếu đã qua ngày đó thì chuyển sang tuần sau
+        targetDay.add(7, "days"); 
       } else if (modifier === "next week") {
         targetDay.add(7, "days");
       }
@@ -42,7 +39,6 @@ const replaceRelativeDates = (text) => {
     }
   );
 
-  // Thay thế các cụm từ đơn giản như today, tomorrow
   return text.replace(/\b(today|tomorrow|this week|next week)\b/gi, (match) => dates[match.toLowerCase()]);
 };
 
@@ -51,7 +47,7 @@ app.post("/api/gemini", async (req, res) => {
 
   try {
     let { text } = req.body;
-    text = replaceRelativeDates(text); // 🔥 Xử lý thời gian chính xác
+    text = replaceRelativeDates(text); 
     console.log("🔄 Processed text:", text);
 
     const prompt = `Extract task details from: "${text}". Respond with JSON:
