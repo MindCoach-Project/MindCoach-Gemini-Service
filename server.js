@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const MODEL_ID = process.env.MODEL_ID;
 
 const replaceRelativeDates = (text) => {
